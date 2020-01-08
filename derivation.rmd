@@ -108,7 +108,7 @@ $$-\nabla^2 ln(f(y_{i})) = \frac{e^{2f(X_{i})}}{(1 + e^{f(X_{i})})^4}\left(\psi^
 
 ### Implementation in R/Python
 
-We write a function that takes in two vectors, y_true and y_pred, and returns two equal size vectors of the same length.
+We write functions that take in two arguments: a vector of real values preds = $f(X_{i})$ and a LightGBM matrix representing the training data set.
 
 ```{r, Function in R}
 library(tidyverse)
