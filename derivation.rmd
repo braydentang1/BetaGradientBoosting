@@ -2,7 +2,7 @@
 title: "beta_gradient_boosting"
 author: "Brayden Tang"
 date: "06/01/2020"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
