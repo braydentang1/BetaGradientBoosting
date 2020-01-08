@@ -426,7 +426,7 @@ summary {
 </div>
 <div id="implementation-in-rpython" class="section level3">
 <h3>Implementation in R/Python</h3>
-<p>We write a function that takes in two vectors, y_true and y_pred, and returns two equal size vectors of the same length.</p>
+<p>We write functions that take in two arguments: a vector of real values preds = <span class="math inline">\(f(X_{i})\)</span> and a LightGBM matrix representing the training data set.</p>
 <pre class="r"><code>library(tidyverse)
 library(lightgbm)
 
