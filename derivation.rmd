@@ -169,9 +169,4 @@ def beta_loss(preds, dtrain):
 
   return -grad, -hess
 
-preds = [0.33, 0.75, 0.2]
-labels = [0.3, 0.7, 0.1]
-
-
-
 ```
