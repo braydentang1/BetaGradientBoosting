@@ -379,7 +379,7 @@ summary {
 <div id="maximum-likelihood-estimation" class="section level3">
 <h3>Maximum Likelihood Estimation</h3>
 <p>Gradient boosting frameworks like LightGBM and XGBoost both allow for a wide range of loss functions to be chosen for different response variables. Examples include the gamma, Tweedie, Poisson, and L2/Gaussian losses amongst many others. We focus here on these three particular loss functions because they can be derived by maximum likelihood in a similar fashion to that of generalized linear models.</p>
-<p>XGBoost and LightGBM both determine their splits (and optimal weights to each terminal node) through closed form expressions using the gradient and Hessian of a loss function L. Thus, we can simply derive the likelihood function for a particular observation <span class="math inline">\(y_i\)</span> and we are done.</p>
+<p>XGBoost and LightGBM both determine their splits (and optimal weights to each terminal node) through closed form expressions using the gradient and Hessian of a loss function L, as a consequence of approximating the true loss function with a second order Taylor approximation. Thus, we can simply derive the likelihood function for a particular observation <span class="math inline">\(y_i\)</span> and we are done.</p>
 <p>Let <span class="math inline">\(y_i\)</span> ~ Gamma with parameters <span class="math inline">\(\alpha, \theta_{i}\)</span>. We are letting <span class="math inline">\(\alpha\)</span> be the same for all observations, for reasons to be discussed below. Then, the density function of <span class="math inline">\(y_i\)</span> is defined as:</p>
 <p><span class="math display">\[f(y_i) = \frac{y_{i}^{\alpha-1} e^{\frac{-y_{i}}{\theta_{i}}}}{\Gamma(\alpha) \times \theta_{i}^{\alpha}}.\]</span></p>
 <p>Now, <span class="math inline">\(E[y_{i}] = \alpha \theta_{i}.\)</span> If we let <span class="math inline">\(\mu_{i} = \alpha \theta_{i}\)</span>, then rewrite <span class="math inline">\(f(y_{i})\)</span> as:</p>
@@ -414,14 +414,14 @@ summary {
 <p><span class="math display">\[\frac{d}{df(x_{i})} \frac{e^{f(X_i)}}{1 + e^{f(X_i)}} = \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2}, \]</span></p>
 <p><span class="math display">\[\frac{d}{df(x_{i})} \frac{1}{1 + e^{f(X_i)}} = -\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2}, \]</span></p>
 <p><span class="math display">\[\frac{d^2}{df(x_{i})^2} \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} = \frac{e^{f({X_{i}})}(1 - e^{f({X_{i}})})}{(1 + e^{f({X_{i}})})^3}.\]</span></p>
-<p>We also need to take the derivative of <span class="math inline">\(ln(\Gamma(x))\)</span> which is denoted as <span class="math inline">\(\psi(x)\)</span>. This is often referred to as the digamma function. For the Hessian, we will also need the second derivative of <span class="math inline">\(ln(\Gamma(x))\)</span>, known as the trigamma function. Denote this as <span class="math inline">\(\psi^2(x)\)</span></p>
+<p>We also need to take the derivative of <span class="math inline">\(ln(\Gamma(x))\)</span> which is denoted as <span class="math inline">\(\psi^{(0)}(x)\)</span>. This is often referred to as the digamma function. For the Hessian, we will also need the second derivative of <span class="math inline">\(ln(\Gamma(x))\)</span>, known as the trigamma function. Denote this as <span class="math inline">\(\psi^{(1)}(x)\)</span></p>
 <p>We now calculate the gradient and Hessian as required.</p>
-<p><span class="math display">\[\nabla ln(f(y_{i})) = \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} ln(y_{i}) -  \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} ln(1 - y_{i}) - \psi\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} + \psi\left(\frac{1}{1 + e^{f(X_i)}}\right)\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} =  \]</span></p>
-<p><span class="math display">\[\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2}\left(\psi\left(\frac{1}{1 + e^{f(X_i)}}\right) - \psi\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) + ln\left(\frac{y_{i}}{1-y_{i}}\right)\right).\]</span></p>
+<p><span class="math display">\[\nabla ln(f(y_{i})) = \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} ln(y_{i}) -  \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} ln(1 - y_{i}) - \psi^{(0)}\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) \frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} + \psi^{(0)}\left(\frac{1}{1 + e^{f(X_i)}}\right)\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2} =  \]</span></p>
+<p><span class="math display">\[\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2}\left(\psi^{(0)}\left(\frac{1}{1 + e^{f(X_i)}}\right) - \psi^{(0)}\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) + ln\left(\frac{y_{i}}{1-y_{i}}\right)\right).\]</span></p>
 <p>Hence,</p>
-<p><span class="math display">\[-\nabla ln(f(y_{i})) = -\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2}\left(\psi\left(\frac{1}{1 + e^{f(X_i)}}\right) - \psi\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) + ln\left(\frac{y_{i}}{1-y_{i}}\right)\right).\]</span></p>
+<p><span class="math display">\[-\nabla ln(f(y_{i})) = -\frac{e^{f(X_{i})}}{(1 + e^{f(X_{i})})^2}\left(\psi^{(0)}\left(\frac{1}{1 + e^{f(X_i)}}\right) - \psi^{(0)}\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) + ln\left(\frac{y_{i}}{1-y_{i}}\right)\right).\]</span></p>
 <p>For the Hessian,</p>
-<p><span class="math display">\[-\nabla^2 ln(f(y_{i})) = \frac{e^{2f(X_{i})}}{(1 + e^{f(X_{i})})^4}\left(\psi^2\left(\frac{1}{1 + e^{f(X_i)}}\right) + \psi^2\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right)\right) -\frac{e^{f({X_{i}})}(1 - e^{f({X_{i}})})}{(1 + e^{f({X_{i}})})^3}\left(\psi\left(\frac{1}{1 + e^{f(X_i)}}\right) - \psi\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) + ln\left(\frac{y_{i}}{1-y_{i}}\right)\right).\]</span></p>
+<p><span class="math display">\[-\nabla^2 ln(f(y_{i})) = \frac{e^{2f(X_{i})}}{(1 + e^{f(X_{i})})^4}\left(\psi^{(1)}\left(\frac{1}{1 + e^{f(X_i)}}\right) + \psi^{(1)}\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right)\right) -\frac{e^{f({X_{i}})}(1 - e^{f({X_{i}})})}{(1 + e^{f({X_{i}})})^3}\left(\psi^{(0)}\left(\frac{1}{1 + e^{f(X_i)}}\right) - \psi^{(0)}\left(\frac{e^{f(X_i)}}{1 + e^{f(X_i)}}\right) + ln\left(\frac{y_{i}}{1-y_{i}}\right)\right).\]</span></p>
 </div>
 </div>
 <div id="implementation-in-rpython" class="section level3">
@@ -479,6 +479,9 @@ def beta_loss(preds, dtrain):
     )
 
   return -grad, -hess</code></pre>
+</div>
+<div id="testing-on-simulated-data" class="section level3">
+<h3>Testing on Simulated Data</h3>
 </div>
 
 
