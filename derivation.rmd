@@ -32,7 +32,7 @@ Now, $E[y_{i}] = \alpha \theta_{i}.$ If we let $\mu_{i} = \alpha \theta_{i}$, th
 
 $$f(y_{i}) = \frac{y_{i}^{\alpha-1} e^{\frac{-y_{i} \alpha}{\mu_{i}}}}{\Gamma(\alpha) \times (\frac{\mu_{i}}{\alpha})^{\alpha}}.$$
 
-Typically, we also replace the shape parameter $\alpha$ with the dispersion parameter that satisfies $\phi = \frac{V(\mu)}{Var[Y | X]} \rightarrow \phi = \alpha$ (for this parameterization since the variance function, $V(\mu) = \mu^2$ in this case). However, our predictions will of course just be $\mu$ and therefore we have no need to estimate $Var[Y | X]$ (for pure prediction purposes), so we can let $\alpha$ be any arbitrary constant. Let $\alpha = 1$ for convenience. Then:
+Typically, we also replace the shape parameter $\alpha$ with the dispersion parameter that satisfies $\phi = \frac{Var[Y | X]}{V(\mu)} \rightarrow \phi = \frac{1}{\alpha}$. However, our predictions will of course just be $\mu$ and therefore we have no need to estimate $Var[Y | X]$ (for pure prediction purposes), so we can let $\alpha$ be any arbitrary constant. Let $\alpha = 1$ for convenience. Then:
 
 $$f(y_{i}) = \frac{e^{\frac{-y_{i}}{\mu}}}{\mu}.$$ As an aside, this is just an exponential distribution since a Gamma with $\alpha = 1$ is an exponential.
 
